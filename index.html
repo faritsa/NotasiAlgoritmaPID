@@ -1,13 +1,576 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/index.css">
-  <script src="js/index.js"></script>
-  <title>Notasi Algoritma</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Pembelajaran Notasi Algoritma - SMP Sunan Ampel Poncokusumo</title>
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-light: #3b82f6;
+            --secondary: #0f766e;
+            --accent: #f59e0b;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+            --danger: #ef4444;
+            --success: #22c55e;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', System-UI, sans-serif; }
+        body { margin: 0; padding: 15px; background-color: var(--bg); color: var(--text); }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a, #0284c7);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0; font-size: 1.4rem; }
+        header p { margin: 3px 0 0 0; opacity: 0.9; font-size: 0.85rem; }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            background: #e2e8f0;
+            padding: 5px;
+            border-radius: 10px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: #475569;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Kartu Selector */
+        .card-selector {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        .select-card-btn {
+            padding: 8px 14px;
+            border: 2px solid #cbd5e1;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .select-card-btn.active {
+            border-color: var(--primary);
+            background: #eff6ff;
+            color: var(--primary);
+        }
+
+        /* Drag & Drop Natural */
+        .sortable-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sortable-item {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: move;
+            font-size: 0.95rem;
+        }
+
+        .sortable-item.correct { border-style: solid; border-color: var(--success); background: #f0fdf4; }
+        .sortable-item.wrong { border-style: solid; border-color: var(--danger); background: #fef2f2; }
+
+        .btn-controls { display: flex; gap: 5px; }
+        .btn-sm { padding: 4px 8px; border: none; border-radius: 4px; background: #cbd5e1; cursor: pointer; }
+
+        /* Flowchart Canvas Interaktif */
+        .fc-toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .fc-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .fc-canvas {
+            min-height: 280px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            background: #fafafa;
+        }
+
+        /* Shapes Flowchart */
+        .shape {
+            min-width: 140px;
+            padding: 10px 15px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .shape-oval { background: #16a34a; border-radius: 25px; }
+        .shape-rect { background: #2563eb; border-radius: 4px; }
+        .shape-parallelogram { background: #d97706; transform: skew(-15deg); }
+        .shape-parallelogram span { display: block; transform: skew(15deg); }
+        .shape-rhombus { background: #9333ea; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; transform: rotate(45deg); margin: 15px 0; }
+        .shape-rhombus span { transform: rotate(-45deg); display: block; }
+        
+        .arrow { font-size: 1.5rem; color: #64748b; margin: -5px 0; }
+
+        /* Form Inputs */
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-success { background: var(--success); }
+        .btn-warning { background: var(--accent); }
+
+        /* Tabel Admin */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #cbd5e1; padding: 8px 12px; text-align: left; font-size: 0.88rem; }
+        th { background: #f1f5f9; }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: white;
+        }
+        .badge-danger { background: var(--danger); }
+        .badge-success { background: var(--success); }
+    </style>
 </head>
 <body>
-	<h1>Notasi Algoritma</h1>
+
+<header>
+    <div>
+        <h1>SMP Sunan Ampel Poncokusumo</h1>
+        <p>Informatika Kelas 7D | Media Interaktif Notasi Algoritma (PID-Ready)</p>
+    </div>
+    <div style="text-align: right;">
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem;">Supervisi Waka Kurikulum</span>
+    </div>
+</header>
+
+<div class="nav-tabs">
+    <button class="tab-btn active" onclick="openTab('studi-kasus')">1. Kartu & Bahasa Natural</button>
+    <button class="tab-btn" onclick="openTab('pseudocode')">2. Notasi Pseudocode</button>
+    <button class="tab-btn" onclick="openTab('flowchart')">3. Notasi Flowchart</button>
+    <button class="tab-btn" onclick="openTab('admin')">4. Dashboard Admin & Refleksi</button>
+</div>
+
+<!-- TAHAP 1: KARTU & BAHASA NATURAL -->
+<div id="studi-kasus" class="tab-content active">
+    <div class="card">
+        <h3>Pilih Kartu Kasus Kelompok:</h3>
+        <div class="card-selector" id="card-buttons"></div>
+        <div id="case-description" style="background: #eff6ff; padding: 12px; border-radius: 8px; border-left: 4px solid var(--primary); margin-bottom: 15px;"></div>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3>Tahap 1: Urutkan Notasi Bahasa Natural (Sentuh & Geser di PID)</h3>
+            <button class="btn btn-warning" onclick="checkNaturalOrder()">Verifikasi Urutan Otomatis</button>
+        </div>
+        <ul class="sortable-list" id="natural-list"></ul>
+    </div>
+</div>
+
+<!-- TAHAP 2: PSEUDOCODE -->
+<div id="pseudocode" class="tab-content">
+    <div class="card">
+        <h3>Tahap 2: Konversi ke Notasi Pseudocode</h3>
+        <p style="font-size: 0.85rem; color: #64748b;">Klik tombol kata kunci baku di bawah untuk membantu penulisan di layar PID:</p>
+        
+        <div style="display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap;">
+            <button class="btn-sm" onclick="addKeyword('PROGRAM ')">PROGRAM</button>
+            <button class="btn-sm" onclick="addKeyword('DEKLARASI:\n')">DEKLARASI</button>
+            <button class="btn-sm" onclick="addKeyword('ALGORITMA:\n')">ALGORITMA</button>
+            <button class="btn-sm" onclick="addKeyword('INPUT ')">INPUT</button>
+            <button class="btn-sm" onclick="addKeyword('IF ')">IF</button>
+            <button class="btn-sm" onclick="addKeyword(' THEN\n')">THEN</button>
+            <button class="btn-sm" onclick="addKeyword('ELSE\n')">ELSE</button>
+            <button class="btn-sm" onclick="addKeyword('OUTPUT ')">OUTPUT</button>
+            <button class="btn-sm" onclick="addKeyword('END')">END</button>
+        </div>
+
+        <textarea id="pseudo-input" rows="10" placeholder="Tuliskan pseudocode kelompok Anda di sini..."></textarea>
+    </div>
+</div>
+
+<!-- TAHAP 3: FLOWCHART -->
+<div id="flowchart" class="tab-content">
+    <div class="card">
+        <h3>Tahap 3: Perancang Notasi Flowchart Interaktif</h3>
+        <p style="font-size: 0.85rem; color: #64748b;">Klik bentuk geometri di bawah ini untuk menambahkan simbol ke papan alur:</p>
+        
+        <div class="fc-toolbar">
+            <button class="fc-btn" style="background: #16a34a;" onclick="addShape('oval', 'Mulai / Selesai')">+ Oval (Terminator)</button>
+            <button class="fc-btn" style="background: #d97706;" onclick="addShape('parallelogram', 'Input / Output')">+ Jajar Genjang (I/O)</button>
+            <button class="fc-btn" style="background: #2563eb;" onclick="addShape('rect', 'Proses')">+ Persegi Panjang (Proses)</button>
+            <button class="fc-btn" style="background: #9333ea;" onclick="addShape('rhombus', 'Kondisi?')">+ Belah Ketupat (Decision)</button>
+            <button class="btn-sm" style="background: #ef4444; color: white;" onclick="clearCanvas()">Reset Canvas</button>
+        </div>
+
+        <div class="fc-canvas" id="fc-canvas">
+            <!-- Shapes akan muncul di sini secara dinamis -->
+        </div>
+
+        <div style="margin-top: 15px; text-align: right;">
+            <button class="btn btn-success" onclick="submitGroupWork()">Kirim Pekerjaan Kelompok</button>
+        </div>
+    </div>
+</div>
+
+<!-- TAHAP 4: DASHBOARD ADMIN & ANALISIS -->
+<div id="admin" class="tab-content">
+    <div class="card">
+        <h3>Rekap Penilaian Kelompok (Otomatis & Manual Guru)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Kelompok</th>
+                    <th>Kartu Kasus</th>
+                    <th>Skor Otomatis (Bahasa Natural)</th>
+                    <th>Skor Manual Pseudocode & Flowchart</th>
+                    <th>Total Skor</th>
+                    <th>Aksi Guru</th>
+                </tr>
+            </thead>
+            <tbody id="rekap-table-body">
+                <!-- Data Rekap Ditampilkan di Sini -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>Analisis Diagnostik Pemahaman Siswa (Refleksi Pembelajaran)</h3>
+        <p style="font-size: 0.85rem; color: #64748b;">Sistem menganalisis tingkat kesukaran notasi untuk bahan evaluasi/pengulangan penjelasan materi:</p>
+        <div id="analisis-output"></div>
+    </div>
+</div>
+
+<script>
+    // Data Kartu Algoritma (Kartu 1 s/d 7)
+    const cardsData = [
+        { id: 1, title: "Kartu 1 (Contoh LKPD)", theme: "Menyeberang Jalan Raya", desc: "Budi hendak menyeberang jalan raya di depan sekolah yang ramai.", steps: ["Mulai.", "Berdiri di tepi jalan raya.", "Tengok ke arah kanan dan kiri jalan.", "Periksa: Apakah ada kendaraan melintas yang dekat?", "Jika YA, tunggu hingga jalan aman (kembali ke langkah 3).", "Jika TIDAK, berjalanlah menyeberang jalan dengan waspada.", "Sampai di seberang jalan dengan selamat.", "Selesai."] },
+        { id: 2, title: "Kelompok 1", theme: "Mencuci Tangan Pakai Sabun", desc: "Ani mencuci tangan dengan bersih dan berurutan sebelum makan di kantin.", steps: ["Mulai.", "Basahi kedua tangan dengan air mengalir.", "Tuangkan sabun secukupnya ke telapak tangan.", "Gosok telapak tangan, punggung tangan, dan sela-sela jari.", "Periksa: Apakah busa sabun sudah merata dan digosok selama 20 detik?", "Jika BELUM, lanjutkan menggosok tangan (kembali ke langkah 4).", "Jika SUDAH, bilas tangan dengan air mengalir hingga busa hilang.", "Keringkan tangan dengan serbet bersih.", "Selesai."] },
+        { id: 3, title: "Kelompok 2", theme: "Menyiapkan Buku Pelajaran", desc: "Dimas menyiapkan buku pelajaran untuk besok malam agar tidak tertinggal.", steps: ["Mulai.", "Buka jadwal pelajaran untuk besok.", "Ambil nama mata pelajaran pertama pada jadwal.", "Cari buku pelajaran tersebut di dalam rak buku.", "Masukkan buku yang ditemukan ke dalam tas sekolah.", "Periksa: Apakah masih ada jadwal pelajaran lain yang belum dimasukkan?", "Jika YA, ambil mata pelajaran berikutnya (kembali ke langkah 4).", "Jika TIDAK, tutup tas sekolahmu dengan rapi.", "Selesai."] },
+        { id: 4, title: "Kelompok 3", theme: "Meracik Teh Manis Hangat", desc: "Siti membuat segelas teh manis hangat untuk Ibu yang baru pulang bekerja.", steps: ["Mulai.", "Seduh kantong teh dengan air panas di dalam gelas.", "Masukkan 2 sendok makan gula pasir.", "Aduk teh dan gula hingga larut.", "Periksa (Cicipi sedikit): Apakah rasa teh sudah cukup manis?", "Jika BELUM, tambahkan 1 sendok gula pasir dan aduk lagi (kembali ke langkah 5).", "Jika SUDAH, sajikan teh manis hangat kepada Ibu.", "Selesai."] },
+        { id: 5, title: "Kelompok 4", theme: "Mengisi Daya (Cas) Ponsel", desc: "Ponsel Rian mati total dan harus diisi daya sampai indikatornya menyala.", steps: ["Mulai.", "Ambil ponsel dan kabel charger.", "Colokkan kepala charger ke stopkontak listrik.", "Sambungkan kabel charger ke lubang pengisi daya di ponsel.", "Periksa: Apakah layar ponsel menampilkan simbol petir/pengisian daya?", "Jika TIDAK, periksa kembali sambungan kabel dan stopkontak (kembali ke langkah 3).", "Jika YA, biarkan ponsel diisi daya hingga baterai cukup.", "Selesai."] },
+        { id: 6, title: "Kelompok 5", theme: "Meminjam Buku Perpustakaan", desc: "Doni meminjam buku cerita di perpustakaan sekolah melalui petugas.", steps: ["Mulai.", "Cari buku cerita yang ingin dipinjam di rak buku.", "Bawa buku dan Kartu Anggota Perpustakaan ke meja petugas.", "Petugas memeriksa data peminjaman di komputer.", "Periksa: Apakah Doni memiliki denda keterlambatan buku sebelumnya?", "Jika YA, bayar denda terlebih dahulu kepada petugas.", "Jika TIDAK (atau denda sudah dibayar), petugas mencap tanggal pengembalian pada buku.", "Terima buku peminjaman dan simpan kembali kartu anggota.", "Selesai."] },
+        { id: 7, title: "Kelompok 6", theme: "Mengambil Uang di Mesin ATM", desc: "Kakak mengambil uang tunai di mesin ATM terdekat secara aman.", steps: ["Mulai.", "Masukkan kartu ATM ke dalam lubang mesin ATM.", "Masukkan 6 digit PIN kartu ATM dengan benar.", "Periksa: Apakah kode PIN yang dimasukkan benar?", "Jika SALAH, ulangi masukkan PIN yang benar (kembali ke langkah 3).", "Jika BENAR, pilih menu 'Tarik Tunai' dan masukkan nominal uang.", "Ambil uang tunai yang keluar dari mesin ATM.", "Ambil kembali kartu ATM dari mesin.", "Selesai."] }
+    ];
+
+    let activeCardIndex = 0;
+    let currentShuffledSteps = [];
+    let groupSubmissions = [];
+
+    // Inisialisasi Aplikasi
+    function init() {
+        const btnContainer = document.getElementById('card-buttons');
+        cardsData.forEach((card, index) => {
+            const btn = document.createElement('button');
+            btn.className = `select-card-btn ${index === 0 ? 'active' : ''}`;
+            btn.innerText = card.title;
+            btn.onclick = () => selectCard(index);
+            btnContainer.appendChild(btn);
+        });
+        selectCard(0);
+    }
+
+    // Pilih Kartu
+    function selectCard(index) {
+        activeCardIndex = index;
+        document.querySelectorAll('.select-card-btn').forEach((b, i) => {
+            b.classList.toggle('active', i === index);
+        });
+
+        const card = cardsData[index];
+        document.getElementById('case-description').innerHTML = `<b>Tema: ${card.theme}</b><br>${card.desc}`;
+        
+        // Acak Langkah untuk Permainan
+        currentShuffledSteps = [...card.steps].sort(() => Math.random() - 0.5);
+        renderNaturalList();
+    }
+
+    // Render List Bahasa Natural
+    function renderNaturalList() {
+        const listContainer = document.getElementById('natural-list');
+        listContainer.innerHTML = '';
+        currentShuffledSteps.forEach((stepText, idx) => {
+            const li = document.createElement('li');
+            li.className = 'sortable-item';
+            li.innerHTML = `
+                <span>${stepText}</span>
+                <div class="btn-controls">
+                    <button class="btn-sm" onclick="moveStep(${idx}, -1)">▲ Naik</button>
+                    <button class="btn-sm" onclick="moveStep(${idx}, 1)">▼ Turun</button>
+                </div>
+            `;
+            listContainer.appendChild(li);
+        });
+    }
+
+    // Pindahkan Urutan
+    function moveStep(index, direction) {
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= currentShuffledSteps.length) return;
+        const temp = currentShuffledSteps[index];
+        currentShuffledSteps[index] = currentShuffledSteps[newIndex];
+        currentShuffledSteps[newIndex] = temp;
+        renderNaturalList();
+    }
+
+    // Verifikasi Urutan Otomatis (Auto-Grading Tahap 1)
+    function checkNaturalOrder() {
+        const originalSteps = cardsData[activeCardIndex].steps;
+        let correctCount = 0;
+        const items = document.querySelectorAll('.sortable-item');
+
+        currentShuffledSteps.forEach((step, idx) => {
+            if (step === originalSteps[idx]) {
+                correctCount++;
+                items[idx].className = 'sortable-item correct';
+            } else {
+                items[idx].className = 'sortable-item wrong';
+            }
+        });
+
+        const score = Math.round((correctCount / originalSteps.length) * 100);
+        alert(`Verifikasi Selesai!\nJumlah Langkah Benar: ${correctCount} dari ${originalSteps.length}\nSkor Otomatis Tahap 1: ${score}`);
+        return score;
+    }
+
+    // Help Helper Keyword Pseudocode
+    function addKeyword(text) {
+        const txtarea = document.getElementById('pseudo-input');
+        txtarea.value += text;
+        txtarea.focus();
+    }
+
+    // Flowchart Builder
+    function addShape(type, defaultText) {
+        const canvas = document.getElementById('fc-canvas');
+        if (canvas.children.length > 0) {
+            const arrow = document.createElement('div');
+            arrow.className = 'arrow';
+            arrow.innerHTML = '↓';
+            canvas.appendChild(arrow);
+        }
+
+        const shape = document.createElement('div');
+        shape.className = `shape shape-${type}`;
+        const textSpan = document.createElement('span');
+        textSpan.contentEditable = true;
+        textSpan.innerText = defaultText;
+        shape.appendChild(textSpan);
+
+        canvas.appendChild(shape);
+    }
+
+    function clearCanvas() {
+        document.getElementById('fc-canvas').innerHTML = '';
+    }
+
+    // Submit Pekerjaan Kelompok
+    function submitGroupWork() {
+        const autoScore = checkNaturalOrder();
+        const pseudoText = document.getElementById('pseudo-input').value;
+        const cardTitle = cardsData[activeCardIndex].title;
+
+        if (!pseudoText.trim()) {
+            alert('Silakan lengkapi Notasi Pseudocode terlebih dahulu!');
+            return;
+        }
+
+        const submission = {
+            id: Date.now(),
+            group: cardTitle,
+            theme: cardsData[activeCardIndex].theme,
+            autoScore: autoScore,
+            manualScore: null,
+            totalScore: autoScore,
+            pseudoText: pseudoText
+        };
+
+        groupSubmissions.push(submission);
+        alert(`Pekerjaan ${cardTitle} berhasil dikirim ke Dashboard Admin!`);
+        renderAdminDashboard();
+    }
+
+    // Render Dashboard Admin
+    function renderAdminDashboard() {
+        const tbody = document.getElementById('rekap-table-body');
+        tbody.innerHTML = '';
+
+        if (groupSubmissions.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Belum ada kelompok yang mengumpulkan.</td></tr>';
+            document.getElementById('analisis-output').innerHTML = '<i>Menunggu data pengumpulan kelompok...</i>';
+            return;
+        }
+
+        groupSubmissions.forEach((sub, idx) => {
+            const tr = document.createElement('tr');
+            const total = sub.manualScore !== null ? Math.round((sub.autoScore + sub.manualScore) / 2) : sub.autoScore;
+            
+            tr.innerHTML = `
+                <td><b>${sub.group}</b></td>
+                <td>${sub.theme}</td>
+                <td><b style="color:var(--primary);">${sub.autoScore} / 100</b></td>
+                <td>${sub.manualScore !== null ? sub.manualScore : '<span class="badge badge-danger">Belum Dinilai</span>'}</td>
+                <td><b>${total}</b></td>
+                <td><button class="btn-sm" style="background:var(--success); color:white;" onclick="gradeManual(${idx})">Nilai Pseudocode/Flowchart</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        calculateAnalysis();
+    }
+
+    // Input Nilai Manual oleh Guru
+    function gradeManual(index) {
+        const sub = groupSubmissions[index];
+        const inputScore = prompt(`Koreksi Hasil Pekerjaan ${sub.group}:\n\nPseudocode:\n${sub.pseudoText}\n\nMasukkan Skor Manual (0-100) untuk Pseudocode & Flowchart:`, sub.manualScore || 85);
+        
+        if (inputScore !== null && !isNaN(inputScore)) {
+            groupSubmissions[index].manualScore = parseFloat(inputScore);
+            renderAdminDashboard();
+        }
+    }
+
+    // Diagnostik & Refleksi Pembelajaran
+    function calculateAnalysis() {
+        let totalAuto = 0;
+        let totalManual = 0;
+        let countManual = 0;
+
+        groupSubmissions.forEach(s => {
+            totalAuto += s.autoScore;
+            if (s.manualScore !== null) {
+                totalManual += s.manualScore;
+                countManual++;
+            }
+        });
+
+        const avgAuto = Math.round(totalAuto / groupSubmissions.length);
+        const avgManual = countManual > 0 ? Math.round(totalManual / countManual) : 0;
+
+        let html = `
+            <ul>
+                <li><b>Notasi Bahasa Natural (Urutan Logis):</b> Rata-rata Skor ${avgAuto}% 
+                    ${avgAuto >= 75 ? '<span class="badge badge-success">Sangat Dipahami</span>' : '<span class="badge badge-danger">Perlu Penegasan Kembali</span>'}
+                </li>
+                <br>
+                <li><b>Notasi Pseudocode & Flowchart (Formal):</b> Rata-rata Skor ${avgManual}% 
+                    ${avgManual >= 75 ? '<span class="badge badge-success">Sangat Dipahami</span>' : '<span class="badge badge-danger">Perlu Refleksi / Penjelasan Ulang</span>'}
+                </li>
+            </ul>
+        `;
+
+        if (avgAuto < 75 || (countManual > 0 && avgManual < 75)) {
+            html += `<div style="background:#fef2f2; color:#b91c1c; padding:10px; border-radius:6px; font-weight:bold; font-size:0.85rem;">
+                [!] Rekomendasi Refleksi Guru: Sebagian besar kelompok masih mengalami kendala pada konversi Notasi Formal (Pseudocode/Flowchart). Disarankan untuk memberikan penguatan konsep percabangan (IF-THEN) sebelum mengakhiri jam pelajaran.
+            </div>`;
+        } else {
+            html += `<div style="background:#f0fdf4; color:#15803d; padding:10px; border-radius:6px; font-weight:bold; font-size:0.85rem;">
+                [✓] Hasil Pemahaman Sangat Baik: Siswa kelas 7D sudah menguasai Notasi Algoritma dengan baik. Pembelajaran dapat dilanjutkan ke materi berikutnya.
+            </div>`;
+        }
+
+        document.getElementById('analisis-output').innerHTML = html;
+    }
+
+    // Tab Navigation
+    function openTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(tb => tb.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        event.target.classList.add('active');
+
+        if (tabId === 'admin') renderAdminDashboard();
+    }
+
+    // Execute Inisialisasi
+    init();
+</script>
+
 </body>
 </html>
